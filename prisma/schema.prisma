@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  Student
+  Admin
+}
+enum EquipmentStatus {
+  AVAILABLE
+  IN_USE
+  MAINTENANCE
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(Student)
+  isActive  Boolean  @default(true)
+
+  usageLogs UsageLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Equipment {
+  id           String          @id @default(uuid())
+  name         String
+  serialNumber String          @unique
+  status       EquipmentStatus @default(AVAILABLE)
+  location     String
+  metadata     Json?
+
+  usageLogs UsageLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UsageLog {
+  id          String @id @default(uuid())
+  userId      String
+  equipmentId String
+
+  startTime DateTime
+  endTime   DateTime?
+  purpose   String
+  notes     String?
+
+  user User @relation(fields: [userId],references: [id])
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
