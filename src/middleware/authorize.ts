@@ -10,14 +10,14 @@ declare global {
         id: string;
         email: string;
         name: string;
-        role: string;
+        role: Roles;
         emailVerified: boolean;
       };
     }
   }
 }
 
-const authorize = (...roles: string[]) => {
+const authorize = (...roles: Roles[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = await batterAuth.api.getSession({
@@ -31,22 +31,22 @@ const authorize = (...roles: string[]) => {
         });
       }
 
-      if (!session.user.emailVerified) {
-        return res.status(403).json({
-          success: false,
-          message: "Email verification required. Please verfiy your email!",
-        });
-      }
+      // if (!session.user.emailVerified) {
+      //   return res.status(403).json({
+      //     success: false,
+      //     message: "Email verification required. Please verfiy your email!",
+      //   });
+      // }
 
       req.user = {
         id: session.user.id,
         email: session.user.email,
         name: session.user.name,
-        role: session.user.role as string,
+        role: session.user.role as Roles,
         emailVerified: session.user.emailVerified,
       };
 
-      if (roles.length && !roles.includes(req.user.role as string)) {
+      if (roles.length && !roles.includes(req.user.role as Roles)) {
         return res.status(403).json({
           success: false,
           message:
