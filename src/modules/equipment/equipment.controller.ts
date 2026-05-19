@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { equipmentService } from "./equipment.service";
+import { EquipmentStatus } from "../../generated/prisma/enums";
 
 const createEquipment = async (req: Request, res: Response) => {
   try {
@@ -16,7 +17,10 @@ const createEquipment = async (req: Request, res: Response) => {
 
 const getEquipment = async (req: Request, res: Response) => {
   try {
-    const equipment = await equipmentService.getEquipment();
+      const status = req.query.status as EquipmentStatus; 
+    const equipment = await equipmentService.getEquipment(status);
+  
+    console.log("Received query parameters:", status);
     return res
       .status(200)
       .json({

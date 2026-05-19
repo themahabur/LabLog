@@ -21,9 +21,13 @@ const createEquipment = async (payload: CreateEquipmentPayload) => {
   }
 };
 
-const getEquipment = async () => {
+const getEquipment = async (status: EquipmentStatus) => {
   try {
-    const equipment = await prisma.equipment.findMany();
+    const equipment = await prisma.equipment.findMany({
+      where: {
+        status: status,
+      },
+    });
     return equipment;
   } catch (error) {
     console.error(error);
