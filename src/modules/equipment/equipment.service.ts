@@ -37,8 +37,12 @@ const getEquipment = async (status: EquipmentStatus) => {
 
 const getEquipmentById = async (id: string) => {
   try {
+    console.log("id:", id);
     const equipment = await prisma.equipment.findUnique({
       where: { id },
+      include:{
+        usageLogs: true
+      }
     });
 
     if (!equipment) {

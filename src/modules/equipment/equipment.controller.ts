@@ -42,6 +42,8 @@ const getEquipmentById = async (req: Request, res: Response) => {
   try {
     const equipmentId = req.params.id;
 
+    console.log("Received equipment ID:", equipmentId);
+
     if (!equipmentId || typeof equipmentId !== "string") {
       return res.status(400).json({
         success: false,
